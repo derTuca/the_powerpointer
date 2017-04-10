@@ -22,5 +22,10 @@ namespace The_Powerpointer.Data
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
         }
+
+        public DbSet<Author> Authors { get; set; }
+        public DbSet<News> News { get; set; }
+        public DbSet<Song> Songs { get; set; }
+        public DbSet<Picture> Pictures { get; set; }
     }
 }

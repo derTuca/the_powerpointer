@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using The_Powerpointer.Data;
 
 namespace The_Powerpointer.Data.Migrations
 {
@@ -15,25 +13,27 @@ namespace The_Powerpointer.Data.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasAnnotation("ProductVersion", "1.0.0-rc3")
+                .HasAnnotation("ProductVersion", "1.1.1")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole", b =>
                 {
-                    b.Property<string>("Id");
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
                     b.Property<string>("Name")
-                        .HasAnnotation("MaxLength", 256);
+                        .HasMaxLength(256);
 
                     b.Property<string>("NormalizedName")
-                        .HasAnnotation("MaxLength", 256);
+                        .HasMaxLength(256);
 
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedName")
+                        .IsUnique()
                         .HasName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles");
@@ -105,8 +105,6 @@ namespace The_Powerpointer.Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("AspNetUserRoles");
                 });
 
@@ -127,7 +125,8 @@ namespace The_Powerpointer.Data.Migrations
 
             modelBuilder.Entity("The_Powerpointer.Models.ApplicationUser", b =>
                 {
-                    b.Property<string>("Id");
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<int>("AccessFailedCount");
 
@@ -135,7 +134,7 @@ namespace The_Powerpointer.Data.Migrations
                         .IsConcurrencyToken();
 
                     b.Property<string>("Email")
-                        .HasAnnotation("MaxLength", 256);
+                        .HasMaxLength(256);
 
                     b.Property<bool>("EmailConfirmed");
 
@@ -144,10 +143,10 @@ namespace The_Powerpointer.Data.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd");
 
                     b.Property<string>("NormalizedEmail")
-                        .HasAnnotation("MaxLength", 256);
+                        .HasMaxLength(256);
 
                     b.Property<string>("NormalizedUserName")
-                        .HasAnnotation("MaxLength", 256);
+                        .HasMaxLength(256);
 
                     b.Property<string>("PasswordHash");
 
@@ -155,12 +154,14 @@ namespace The_Powerpointer.Data.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed");
 
+                    b.Property<byte[]>("ProfilePicture");
+
                     b.Property<string>("SecurityStamp");
 
                     b.Property<bool>("TwoFactorEnabled");
 
                     b.Property<string>("UserName")
-                        .HasAnnotation("MaxLength", 256);
+                        .HasMaxLength(256);
 
                     b.HasKey("Id");
 
@@ -172,6 +173,102 @@ namespace The_Powerpointer.Data.Migrations
                         .HasName("UserNameIndex");
 
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("The_Powerpointer.Models.Author", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ApplicationUserId");
+
+                    b.Property<DateTime>("DateBorn");
+
+                    b.Property<DateTime>("DateDied");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.ToTable("Authors");
+                });
+
+            modelBuilder.Entity("The_Powerpointer.Models.News", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ApplicationUserId");
+
+                    b.Property<DateTime>("DatePublished");
+
+                    b.Property<string>("Description");
+
+                    b.Property<string>("ImageSource");
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("Url");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.ToTable("News");
+                });
+
+            modelBuilder.Entity("The_Powerpointer.Models.Picture", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ApplicationUserId");
+
+                    b.Property<string>("Author");
+
+                    b.Property<int?>("AuthorId");
+
+                    b.Property<DateTime>("DateCreated");
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("Source");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("AuthorId");
+
+                    b.ToTable("Pictures");
+                });
+
+            modelBuilder.Entity("The_Powerpointer.Models.Song", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ApplicationUserId");
+
+                    b.Property<string>("Author");
+
+                    b.Property<int?>("AuthorId");
+
+                    b.Property<DateTime>("DateCreated");
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("Source");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("AuthorId");
+
+                    b.ToTable("Songs");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>
@@ -209,6 +306,42 @@ namespace The_Powerpointer.Data.Migrations
                         .WithMany("Roles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("The_Powerpointer.Models.Author", b =>
+                {
+                    b.HasOne("The_Powerpointer.Models.ApplicationUser")
+                        .WithMany("Authors")
+                        .HasForeignKey("ApplicationUserId");
+                });
+
+            modelBuilder.Entity("The_Powerpointer.Models.News", b =>
+                {
+                    b.HasOne("The_Powerpointer.Models.ApplicationUser")
+                        .WithMany("News")
+                        .HasForeignKey("ApplicationUserId");
+                });
+
+            modelBuilder.Entity("The_Powerpointer.Models.Picture", b =>
+                {
+                    b.HasOne("The_Powerpointer.Models.ApplicationUser")
+                        .WithMany("Pictures")
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("The_Powerpointer.Models.Author")
+                        .WithMany("Pictures")
+                        .HasForeignKey("AuthorId");
+                });
+
+            modelBuilder.Entity("The_Powerpointer.Models.Song", b =>
+                {
+                    b.HasOne("The_Powerpointer.Models.ApplicationUser")
+                        .WithMany("Songs")
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("The_Powerpointer.Models.Author")
+                        .WithMany("Songs")
+                        .HasForeignKey("AuthorId");
                 });
         }
     }
