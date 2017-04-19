@@ -8,9 +8,10 @@ using The_Powerpointer.Data;
 namespace The_Powerpointer.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170414065033_ChangedNewsColumnNames")]
+    partial class ChangedNewsColumnNames
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")
@@ -138,10 +139,6 @@ namespace The_Powerpointer.Data.Migrations
 
                     b.Property<bool>("EmailConfirmed");
 
-                    b.Property<string>("FirstName");
-
-                    b.Property<string>("LastName");
-
                     b.Property<bool>("LockoutEnabled");
 
                     b.Property<DateTimeOffset?>("LockoutEnd");
@@ -184,6 +181,8 @@ namespace The_Powerpointer.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("ApplicationUserId");
+
                     b.Property<DateTime>("DateBorn");
 
                     b.Property<DateTime>("DateDied");
@@ -192,52 +191,17 @@ namespace The_Powerpointer.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ApplicationUserId");
+
                     b.ToTable("Authors");
-                });
-
-            modelBuilder.Entity("The_Powerpointer.Models.Joiners.UserNews", b =>
-                {
-                    b.Property<string>("ApplicationUserId");
-
-                    b.Property<int>("NewsId");
-
-                    b.HasKey("ApplicationUserId", "NewsId");
-
-                    b.HasIndex("NewsId");
-
-                    b.ToTable("UserNews");
-                });
-
-            modelBuilder.Entity("The_Powerpointer.Models.Joiners.UserPicture", b =>
-                {
-                    b.Property<string>("ApplicationUserId");
-
-                    b.Property<int>("PictureId");
-
-                    b.HasKey("ApplicationUserId", "PictureId");
-
-                    b.HasIndex("PictureId");
-
-                    b.ToTable("UserPictures");
-                });
-
-            modelBuilder.Entity("The_Powerpointer.Models.Joiners.UserSong", b =>
-                {
-                    b.Property<string>("ApplicationUserId");
-
-                    b.Property<int>("SongId");
-
-                    b.HasKey("ApplicationUserId", "SongId");
-
-                    b.HasIndex("SongId");
-
-                    b.ToTable("UserSongs");
                 });
 
             modelBuilder.Entity("The_Powerpointer.Models.News", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ApplicationUserId");
 
                     b.Property<DateTime>("DatePublished");
 
@@ -251,6 +215,8 @@ namespace The_Powerpointer.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ApplicationUserId");
+
                     b.ToTable("News");
                 });
 
@@ -258,6 +224,8 @@ namespace The_Powerpointer.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ApplicationUserId");
 
                     b.Property<string>("Author");
 
@@ -270,6 +238,8 @@ namespace The_Powerpointer.Data.Migrations
                     b.Property<string>("Source");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("AuthorId");
 
@@ -281,6 +251,8 @@ namespace The_Powerpointer.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("ApplicationUserId");
+
                     b.Property<string>("Author");
 
                     b.Property<int?>("AuthorId");
@@ -292,6 +264,8 @@ namespace The_Powerpointer.Data.Migrations
                     b.Property<string>("Source");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("AuthorId");
 
@@ -335,47 +309,26 @@ namespace The_Powerpointer.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("The_Powerpointer.Models.Joiners.UserNews", b =>
+            modelBuilder.Entity("The_Powerpointer.Models.Author", b =>
                 {
-                    b.HasOne("The_Powerpointer.Models.ApplicationUser", "ApplicationUser")
+                    b.HasOne("The_Powerpointer.Models.ApplicationUser")
+                        .WithMany("Authors")
+                        .HasForeignKey("ApplicationUserId");
+                });
+
+            modelBuilder.Entity("The_Powerpointer.Models.News", b =>
+                {
+                    b.HasOne("The_Powerpointer.Models.ApplicationUser")
                         .WithMany("News")
-                        .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("The_Powerpointer.Models.News", "News")
-                        .WithMany("Users")
-                        .HasForeignKey("NewsId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("The_Powerpointer.Models.Joiners.UserPicture", b =>
-                {
-                    b.HasOne("The_Powerpointer.Models.ApplicationUser", "ApplicationUser")
-                        .WithMany("Pictures")
-                        .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("The_Powerpointer.Models.Picture", "Picture")
-                        .WithMany("Users")
-                        .HasForeignKey("PictureId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("The_Powerpointer.Models.Joiners.UserSong", b =>
-                {
-                    b.HasOne("The_Powerpointer.Models.ApplicationUser", "ApplicationUser")
-                        .WithMany("Songs")
-                        .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("The_Powerpointer.Models.Song", "Song")
-                        .WithMany("Users")
-                        .HasForeignKey("SongId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ApplicationUserId");
                 });
 
             modelBuilder.Entity("The_Powerpointer.Models.Picture", b =>
                 {
+                    b.HasOne("The_Powerpointer.Models.ApplicationUser")
+                        .WithMany("Pictures")
+                        .HasForeignKey("ApplicationUserId");
+
                     b.HasOne("The_Powerpointer.Models.Author")
                         .WithMany("Pictures")
                         .HasForeignKey("AuthorId");
@@ -383,6 +336,10 @@ namespace The_Powerpointer.Data.Migrations
 
             modelBuilder.Entity("The_Powerpointer.Models.Song", b =>
                 {
+                    b.HasOne("The_Powerpointer.Models.ApplicationUser")
+                        .WithMany("Songs")
+                        .HasForeignKey("ApplicationUserId");
+
                     b.HasOne("The_Powerpointer.Models.Author")
                         .WithMany("Songs")
                         .HasForeignKey("AuthorId");

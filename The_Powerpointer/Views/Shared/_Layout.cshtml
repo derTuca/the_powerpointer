@@ -1,5 +1,6 @@
-﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
-
+﻿@using System.Globalization
+@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
+@inject SignInManager<ApplicationUser> SignInManager
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,10 +11,13 @@
     <environment names="Development">
         <link rel="stylesheet" href="~/lib/semantic/dist/semantic.min.css"/>
         <link rel="stylesheet" href="~/css/site.css" />
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300" rel="stylesheet"> 
+        <link rel="stylesheet" href="~/css/range.css"/>
     </environment>
     <environment names="Staging,Production">
         <link rel="stylesheet" href="~/lib/semantic/dist/semantic.min.css" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/css/range.css" />
     </environment>
     @Html.Raw(JavaScriptSnippet.FullScript)
 </head>
@@ -21,10 +25,13 @@
     <div class="ui container">
         <div class="ui attached stackable menu">
             <div class="ui container">
-                <a class="item" href="#">The PowerPointer</a>
-                <a class="item" href="#"><i class="clock icon"></i>Briefing</a>
-                <a class="item" href="#"><i class="star icon"></i>Favorite posts</a>
-                <a class="item" href="#"><i class="calendar icon"></i>Today 10 years ago</a>
+                <a class="item">The PowerPointer</a>
+                <a class="item" asp-controller="Home" asp-action="Index"><i class="clock icon"></i>Briefing</a>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <a class="item" asp-controller="Home" asp-action="FavoritePosts"><i class="star icon"></i>Favorite posts</a>
+                }
+                <a class="item" asp-action="TenYearsAgo" asp-controller="Home"><i class="calendar icon"></i>@DateTime.Today.ToString("MMMM", CultureInfo.InvariantCulture) 10 years ago</a>
                 @await Html.PartialAsync("_LoginPartial")
             </div>
         </div>
@@ -36,6 +43,7 @@
     <environment names="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/semantic/dist/semantic.min.js"></script>
+        <script src="~/js/range.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
     </environment>
     <environment names="Staging,Production">
@@ -46,6 +54,7 @@
                 integrity="sha384-K+ctZQ+LL8q6tP7I94W+qzQsfRV2a+AfHIi9k8z8l9ggpc8X+Ytst4yBo/hH+8Fk">
         </script>
         <script src="~/lib/semantic/dist/semantic.min.js"></script>
+        <script src="~/js/range.js"></script>
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
 

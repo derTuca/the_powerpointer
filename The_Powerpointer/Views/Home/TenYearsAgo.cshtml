@@ -1,0 +1,48 @@
+@using Newtonsoft.Json.Linq
+
+@inject UserManager<ApplicationUser> UserManager
+@model IEnumerable<News>
+@{
+    ViewData["Title"] = "TenYearsAgo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var user = await UserManager.GetUserAsync(User);
+}
+<div class="ui six doubling stackable cards">
+    @foreach (var n in Model.Take(100))
+    {
+        <div class="ui fluid card">
+            <div class="image">
+
+                <img src="@n.ImageUrl" />
+
+
+            </div>
+            <div class="content">
+                <a href="@n.Url">
+                    <div class="header">@n.Headline</div>
+                    <div class="meta">@n.DatePublished.ToString("d")</div>
+                    <div class="description">
+                        <p>@n.Description</p>
+                    </div>
+                </a>
+
+            </div>
+            @if (user != null)
+            {
+                <div class="content">
+                    <span class="right floated">
+                        @{
+                                
+                            var f = user.News.SingleOrDefault(un => un.ApplicationUserId == user.Id && un.NewsId == n.Id);
+                            var cl = f == null ? "empty star icon" : "star icon";
+                            <i class="@cl" id="starIcon" onclick="starClicked(this, @n.Id)"></i>
+                        }
+
+                    </span>
+                </div>   
+            }
+                
+        </div>
+    }
+</div>
+

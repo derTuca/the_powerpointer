@@ -1,0 +1,61 @@
+﻿@model ShowMoreViewModel
+<div id="moreBody">
+    @if (Model.Pictures != null)
+    {
+        <div class="ui two stackable cards">
+            @foreach (var p in Model.Pictures)
+            {
+                <div class="ui fluid card">
+                    <div class="image">
+                        <img src="~/media/pictures/@p.Source" />
+                    </div>
+                    <div class="content">
+                        <div class="header">@p.Name</div>
+                        <div class="meta">@p.Author</div>
+                    </div>
+                </div>
+            }
+       
+        </div>
+    }
+
+    else if (Model.Songs != null)
+    {
+        foreach (var s in Model.Songs)
+        {
+            <div class="ui fluid card">
+                <div class="content">
+                    <audio src="@s.Source" id="audioTag"></audio>
+                    <i class="play icon" id="playOnShowMoreIcon"></i>
+                    <span class="songName">@s.Name</span>
+                    <span class="bulletPoint">&bull;</span>
+                    <span class="songAuthor">@s.Author</span>
+                </div>
+
+                <div class="ui range" style="display: inline;" id="my-range"></div>
+            </div>
+
+        }
+    }
+
+    else
+    {
+        <div class="ui four doubling stackable cards">
+            @foreach (var n in Model.News)
+            {
+                <a class="ui fluid card" href="@n.Url">
+                    <div class="image">
+                        <img src="@n.ImageUrl"/>
+                    </div>
+                    <div class="content">
+                        <div class="header">@n.Headline</div>
+                        <div class="meta">@n.DatePublished.ToString("d")</div>
+                        <div class="description">
+                            <p>@n.Description</p>
+                        </div>
+                    </div>
+                </a>
+            }
+        </div>
+    }
+</div>

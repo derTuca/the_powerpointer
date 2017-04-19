@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using The_Powerpointer.Models.Joiners;
 
 namespace The_Powerpointer.Models
 {
@@ -10,14 +11,16 @@ namespace The_Powerpointer.Models
     {
         public int Id { get; set; }
         [JsonProperty("title")]
-        public string Name { get; set; }
+        public string Headline { get; set; }
         [JsonProperty("description")]
         public string Description { get; set; }
-        [JsonProperty("publishedAt")]
+        [JsonProperty("publishedAt", NullValueHandling = NullValueHandling.Ignore)]
         public DateTime DatePublished { get; set; }
         [JsonProperty("url")]
         public string Url { get; set; }
         [JsonProperty("urlToImage")]
-        public string ImageSource { get; set; }
+        public string ImageUrl { get; set; }
+
+        public virtual ICollection<UserNews> Users { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using The_Powerpointer.Models.Joiners;
 
 namespace The_Powerpointer.Models
 {
@@ -14,6 +15,6 @@ namespace The_Powerpointer.Models
         public DateTime DateCreated { get; set; }
         public string Author { get; set; }
         public string Source { get; set; }
-
+        public virtual ICollection<UserPicture> Users { get; set; }
     }
 }

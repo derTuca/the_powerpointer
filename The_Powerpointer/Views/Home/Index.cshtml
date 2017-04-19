@@ -1,65 +1,103 @@
-﻿@model MainPageViewModel
+﻿@using The_Powerpointer.Models.Joiners
+@model MainPageViewModel
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
 
-<div class="ui vertically divided grid">
-    <div class="one column row">
-        <div class="column">
-            <h1 class="mainh ui header" style="font-weight: 100; font-size: 10em; margin-top: 15px;">Hi Alex!</h1>
-            <h1 class="mainh ui header" style="margin-top:-30px;">Here's your news for today.</h1>
-        </div>
-    </div>
-    <h3 class="ui header">Paintings</h3>
-    <div class="two column row">
-        @foreach (var p in Model.Pictures)
-        {
-            <div class="column">
-                <div class="ui fluid card">
-                    <div class="image"><img src="@p.Source"/>
-                    </div>
-                    <div class="content">
-                        <div class="header">@p.Name</div>
-                        <div class="meta">@p.Author</div>
-                    </div>
-                </div>
-            </div>
-        }
-                
-              
-    </div>
-    <h3 class="ui header">Song</h3>
-    <div class="one column row">
-        <div class="column">
-            <div class="ui fluid card">
-                <div style="display: inline">
-                    <i class="play icon" style="font-size: 2em; margin-top: 7px;"></i>
-                    <span style="font-weight: bold">@Model.Song.Name</span>
-                    <span style="margin-left: 2px; margin-right: 2px;">&bull;</span>
-                    <span style="font-weight: lighter">@Model.Song.Author</span>
-                </div>
+@{
 
-                <div class="ui range" style="display: inline;" id="my-range"></div>
-            </div>
+    var user = await UserManager.GetUserAsync(User);
+    var str = user != null ? user.FirstName : "there";
+    <h1 class="ui header lightFont" id="mainText">Hi @str!</h1>
+}
 
-        </div>
+<h1 class="ui header lightFont" id="mainSubtitle">Here's your news for today.</h1>
+
+@if (Model.News != null)
+{
+    <div class="headerButtons">
+        <h3 class="ui header">News</h3>
+        <a asp-controller="Home" asp-action="ShowMoreList" asp-route-type="0">
+            <h4 class="ui header">Show more</h4>
+        </a>
     </div>
-    <h3 class="ui header">News</h3>
-    <div class="four column row ui cards">
+
+    <div class="ui four doubling stackable cards">
         @foreach (var n in Model.News)
         {
-            <div class="column">
-                <a class="ui card" href="#">
-                    <div class="image">
-                        <img src="@n.ImageSource"/>
-                    </div>
-                    <div class="content">
-                        <div class="header">@n.Name</div>
+            <div class="ui fluid card">
+                <div class="image">
+
+                    <img src="@n.ImageUrl"/>
+
+
+                </div>
+                <div class="content">
+                    <a href="@n.Url">
+                        <div class="header">@n.Headline</div>
                         <div class="meta">@n.DatePublished.ToString("d")</div>
                         <div class="description">
                             <p>@n.Description</p>
                         </div>
+                    </a>
+
+                </div>
+                @if (user != null)
+                {
+                    <div class="content">
+                        <span class="right floated">
+                            @{
+
+                                var f = user.News.SingleOrDefault(un => un.ApplicationUserId == user.Id && un.NewsId == n.Id);
+                                var cl = f == null ? "empty star icon" : "star icon";
+                                <i class="@cl" id="starIcon" onclick="starClicked(this, @n.Id)"></i>
+                            }
+
+                        </span>
                     </div>
-                </a>
+                }
+
             </div>
         }
-                
+
     </div>
+}
+<div class="headerButtons">
+    <h3 class="ui header">Song</h3>
+    <a asp-controller="Home" asp-action="ShowMoreList" asp-route-type="1">
+        <h4 class="ui header">Show more</h4>
+    </a>
+</div>
+<div class="ui fluid card">
+    <div class="content">
+        <audio src="~/media/songs/@Model.Song.Source" id="audioTag"></audio>
+        <i class="play icon" id="playIcon"></i>
+        <span class="songName">@Model.Song.Name</span>
+        <span class="bulletPoint">&bull;</span>
+        <span class="songAuthor">@Model.Song.Author</span>
+    </div>
+
+    <div class="ui range" style="display: inline;" id="my-range"></div>
+</div>
+
+<div class="headerButtons">
+    <h3 class="ui header ">Paintings</h3>
+    <a asp-controller="Home" asp-action="ShowMoreList" asp-route-type="2">
+        <h4 class="ui header ">Show more</h4>
+    </a>
+</div>
+<div class="ui two stackable cards">
+    @foreach (var p in Model.Pictures)
+    {
+        <div class="ui fluid card">
+            <div class="image">
+                <img src="~/media/pictures/@p.Source"/>
+            </div>
+            <div class="content">
+                <div class="header">@p.Name</div>
+                <div class="meta">@p.Author</div>
+            </div>
+        </div>
+    }
+
+
 </div>

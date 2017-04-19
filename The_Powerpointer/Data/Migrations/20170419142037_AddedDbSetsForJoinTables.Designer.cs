@@ -8,9 +8,10 @@ using The_Powerpointer.Data;
 namespace The_Powerpointer.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170419142037_AddedDbSetsForJoinTables")]
+    partial class AddedDbSetsForJoinTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")
@@ -139,6 +140,8 @@ namespace The_Powerpointer.Data.Migrations
                     b.Property<bool>("EmailConfirmed");
 
                     b.Property<string>("FirstName");
+
+                    b.Property<string>("FullName");
 
                     b.Property<string>("LastName");
 

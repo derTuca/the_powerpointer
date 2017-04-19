@@ -5,36 +5,40 @@
 
 <h2>@ViewData["Title"].</h2>
 
-<form asp-controller="Account" asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
+<form asp-controller="Account" asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]" enctype="multipart/form-data" method="post" class="ui form" id="registerForm">
     <h4>Create a new account.</h4>
     <hr />
-    <div asp-validation-summary="All" class="text-danger"></div>
-    <div class="form-group">
-        <label asp-for="Email" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="Email" class="form-control" />
-            <span asp-validation-for="Email" class="text-danger"></span>
-        </div>
+
+    <div asp-validation-summary="All" class="ui error message"></div>
+    <div class="field">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" id="Name"/>
+        <span asp-validation-for="Name" class="ui error message"></span>
     </div>
-    <div class="form-group">
-        <label asp-for="Password" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="Password" class="form-control" />
-            <span asp-validation-for="Password" class="text-danger"></span>
-        </div>
+
+    <div class="field">
+        <label asp-for="Email"></label>
+        <input asp-for="Email" id="Email" />
+        <span asp-validation-for="Email" class="ui error message"></span>
     </div>
-    <div class="form-group">
-        <label asp-for="ConfirmPassword" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="ConfirmPassword" class="form-control" />
-            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-        </div>
+    <div class="field">
+        <label asp-for="Password"></label>
+        <input asp-for="Password" id="Password" />
+
+
     </div>
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <button type="submit" class="btn btn-default">Register</button>
-        </div>
+    <div class="field">
+        <label asp-for="ConfirmPassword"></label>
+        <input asp-for="ConfirmPassword" id="ConfirmPassword" />
+
+
     </div>
+    <div class="field">
+        <label asp-for="ProfilePicture" class="ui button"></label>
+        <input asp-for="ProfilePicture" type="file" style="display: none;" />
+    </div>
+    <button type="submit" class="ui button">Register</button>
+
 </form>
 
 @section Scripts {

@@ -1,14 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using ImageMagick;
+using ImageSharp;
+using ImageSharp.Processing;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using TagLib.Image;
 using The_Powerpointer.Models;
 using The_Powerpointer.Models.AccountViewModels;
 using The_Powerpointer.Services;
@@ -92,6 +99,14 @@ namespace The_Powerpointer.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> EmailExists(string email)
+        {
+           var mail = await _userManager.FindByEmailAsync(email);
+            return new ObjectResult(mail != null);
+        }
+
         //
         // GET: /Account/Register
         [HttpGet]
@@ -112,7 +127,11 @@ namespace The_Powerpointer.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, FirstName = model.Name.Split(' ')[0], LastName = model.Name.Split(' ')[1]};
+                if (model.ProfilePicture != null)
+                {
+                    user.ProfilePicture = await ResizeTo100100(model.ProfilePicture);
+                }
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -133,6 +152,25 @@ namespace The_Powerpointer.Controllers
             return View(model);
         }
 
+        private async Task<byte[]> ResizeTo100100(IFormFile formPicture)
+        {
+            using (var stream = new MemoryStream())
+            {
+                await formPicture.CopyToAsync(stream);
+                using (var image = new MagickImage(stream))
+                {
+                    using (var os = new MemoryStream())
+                    {
+                        image.Resize(100, 100);
+                        image.Strip();
+                        image.Write(os);
+                        return os.ToArray();
+                    }
+
+                }
+
+            }
+        } 
         //
         // POST: /Account/Logout
         [HttpPost]
@@ -195,7 +233,8 @@ namespace The_Powerpointer.Controllers
                 ViewData["ReturnUrl"] = returnUrl;
                 ViewData["LoginProvider"] = info.LoginProvider;
                 var email = info.Principal.FindFirstValue(ClaimTypes.Email);
-                return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = email });
+                var name = info.Principal.FindFirstValue(ClaimTypes.Name);
+                return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = email, Name = name });
             }
         }
 
@@ -214,7 +253,8 @@ namespace The_Powerpointer.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, FirstName = model.Name.Split(' ')[0], LastName = model.Name.Split(' ')[1] };
+                if (model.ProfilePicture != null) user.ProfilePicture = await ResizeTo100100(model.ProfilePicture);
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {

@@ -11,10 +11,29 @@
   <PropertyGroup>
     <UserSecretsId>aspnet-The_Powerpointer-ea71fcd2-3b75-4d17-a235-e56b51764025</UserSecretsId>
   </PropertyGroup>
+
   <ItemGroup>
+    <Content Remove="wwwroot/css\site.min.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Properties\PublishProfiles\ThePowerpointer20170411092902 - Web Deploy.pubxml" />
+    <None Remove="Properties\PublishProfiles\ThePowerpointer20170411093820 - Web Deploy.pubxml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="wwwroot\css\range.css" />
+    <Content Include="wwwroot\css\site.css" />
+    <Content Include="wwwroot\js\range.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="ImageSharp" Version="1.0.0-alpha6-00065" />
+    <PackageReference Include="Magick.NET.Core-Q8" Version="7.0.5.502" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="1.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="1.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="1.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="1.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="1.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.2" />
@@ -23,17 +42,42 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="1.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.Design" Version="1.1.1" PrivateAssets="All" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="1.1.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.AzureKeyVault" Version="1.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="1.1.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="1.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
     <PackageReference Include="TagLib.Portable" Version="1.0.4" />
+    <PackageReference Include="WebApiRouteDebugger" Version="1.0.0" />
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="1.0.0" />
     <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="1.0.0" />
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="wwwroot\media\pictures\Moonrise on the Banks of the River Oise _ 1874 _ Charles-Francois Daubigny.jpg" />
+    <None Include="wwwroot\media\pictures\The Arab Tent _ 1866 _ Sir Edwin Henry Landseer.jpg" />
+    <None Include="wwwroot\media\pictures\Two Sisters On The Terrace _ 1881 _ Pierre-Auguste Renoir.png" />
+    <None Include="wwwroot\media\songs\Beethoven_1796_German Dance.MP3" />
+    <None Include="wwwroot\media\songs\Beethoven_1799_Piano Sonata No. 9 - 2nd Movement.MP3" />
+    <None Include="wwwroot\media\songs\Beethoven_1800_Horn Sonata.MP3" />
+    <None Include="wwwroot\media\songs\Beethoven_1801_Piano Sonata No. 14 - 1st Move.MP3" />
+    <None Include="wwwroot\media\songs\Beethoven_1807_Corolian Overture.MP3" />
+    <None Include="wwwroot\media\songs\Beethoven_1808_Symphony No. 5 - 1st Movement.MP3" />
+    <None Include="wwwroot\media\songs\Beethoven_1808_Synphony No. 6 - 5th Movement.MP3" />
+    <None Include="wwwroot\media\songs\Beethoven_1813_Symphony No. 7 - 2nd Movement.MP3" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Media\Songs\" />
+    <Folder Include="Properties\PublishProfiles\" />
+    <Folder Include="Properties\PublishProfiles\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Build.Tasks.v4.0">
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.2\Microsoft.Build.Tasks.v4.0.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
