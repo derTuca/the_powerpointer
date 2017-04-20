@@ -14,12 +14,9 @@
 
 @if (Model.News != null)
 {
-    <div class="headerButtons">
-        <h3 class="ui header">News</h3>
-        <a asp-controller="Home" asp-action="ShowMoreList" asp-route-type="0">
-            <h4 class="ui header">Show more</h4>
-        </a>
-    </div>
+   
+        <h3 class="ui header mainHeader">News</h3>
+
 
     <div class="ui four doubling stackable cards">
         @foreach (var n in Model.News)
@@ -27,7 +24,7 @@
             <div class="ui fluid card">
                 <div class="image">
 
-                    <img src="@n.ImageUrl"/>
+                    <img src="@n.ImageUrl" />
 
 
                 </div>
@@ -54,19 +51,20 @@
 
                         </span>
                     </div>
-                }
+                                }
 
             </div>
-        }
+                                }
 
     </div>
-}
-<div class="headerButtons">
-    <h3 class="ui header">Song</h3>
-    <a asp-controller="ShowMore" asp-action="Songs">
+    <a asp-controller="Home" asp-action="ShowMoreList" asp-route-type="0" class="showMoreButton">
         <h4 class="ui header">Show more</h4>
     </a>
-</div>
+                                }
+
+    <h3 class="ui header mainHeader">Song</h3>
+    
+
 <div class="ui fluid card">
     <div class="content">
         <audio src="~/media/songs/@Model.Song.Source" id="audioTag"></audio>
@@ -78,19 +76,19 @@
 
     <div class="ui range" style="display: inline;" id="my-range"></div>
 </div>
+<a asp-controller="ShowMore" asp-action="Songs" class="showMoreButton">
+    <h4 class="ui header">Show more</h4>
+</a>
 
-<div class="headerButtons">
-    <h3 class="ui header ">Paintings</h3>
-    <a asp-controller="Home" asp-action="ShowMoreList" asp-route-type="2">
-        <h4 class="ui header ">Show more</h4>
-    </a>
-</div>
+    <h3 class="ui header mainHeader">Paintings</h3>
+    
+
 <div class="ui two stackable cards">
     @foreach (var p in Model.Pictures)
     {
         <div class="ui fluid card">
             <div class="image">
-                <img src="~/media/pictures/@p.Source"/>
+                <img src="~/media/pictures/@p.Source" />
             </div>
             <div class="content">
                 <div class="header">@p.Name</div>
@@ -101,3 +99,6 @@
 
 
 </div>
+<a asp-controller="Home" asp-action="ShowMoreList" asp-route-type="2" class="showMoreButton">
+    <h4 class="ui header ">Show more</h4>
+</a>

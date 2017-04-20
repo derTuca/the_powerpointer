@@ -45,15 +45,6 @@
     cursor: pointer;
 }
 
-.headerButtons {
-    display: flex;
-    -o-justify-content: space-between;
-    -webkit-justify-content: space-between;
-    justify-content: space-between;
-    margin-top: 10px;
-    margin-bottom: -15px;
-}
-
 #moreBody {
     margin-top: 20px;
 }
@@ -61,4 +52,12 @@
 .profile-picture {
     -ms-border-radius: 50%;
     border-radius: 50%;
+}
+.showMoreButton {
+    float: right;
+    margin-top: 5px;
+}
+
+.mainHeader {
+    margin-top: 15px;
 }
