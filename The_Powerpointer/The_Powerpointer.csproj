@@ -73,6 +73,7 @@
     <Folder Include="Media\Songs\" />
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="Properties\PublishProfiles\" />
+    <Folder Include="Views\ShowMore\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Build.Tasks.v4.0">

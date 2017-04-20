@@ -40,11 +40,31 @@ $(document).ready(function () {
        
     });
 
-    $('#playOnShowMoreIcon').click(function() {
+    
 
-    });
 
-    $.validator.addMethod("regex",
+    //var activeAudioElement;
+    //var playing = false;
+    //$('.playOnShowMoreIcon').click(function () {
+    //    if ($(this).hasClass('play')) {
+    //        if (activeAudioElement != null && $(activeAudioElement) != $(this).siblings("audio")) {
+    //            $(activeAudioElement).trigger('pause');
+    //            var icon = $(activeAudioElement).siblings("i");
+    //            $(icon).toggleClass('pause play');
+    //        }
+    //        activeAudioElement = $(this).siblings("audio");
+    //        $(activeAudioElement).trigger('play');
+    //        $(this).toggleClass('play pause');
+    //        playing = true;
+    //    } else {
+    //        $(activeAudioElement).trigger('pause');
+    //        $(this).toggleClass('pause play');
+    //        playing = false
+    //    }
+        
+    //});
+
+    jQuery.validator.addMethod("regex",
         function(value, element, regexp) {
             var re = new RegExp(regexp);
             return this.optional(element) || re.test(value);
@@ -89,7 +109,13 @@ $(document).ready(function () {
             $(element).parents(".field").removeClass(errorClass);
         }
     });
+
+    $('#showSongsPlayIcon').click(function() {
+       
+    });
 });
+
+
 function starClicked(icon, id) {
     console.log(id);
     $.get("/api/favorite",
@@ -101,4 +127,77 @@ function starClicked(icon, id) {
         }).fail(function(e) {
         console.log(e);
     });
+}
+
+var showMoreAudio;
+function songPlayShowMoreClicked(link) {
+
+    showMoreAudio = document.createElement('audio');
+    showMoreAudio.setAttribute('src', "/media/songs/" + link);
+    showMoreAudio.play();
+}
+
+var audioElement;
+var set = true;
+function songClicked(name, author, source) {
+    console.log("DA");
+    var audioElement = document.getElementById("showSongsAudio");
+    audioElement.src = "https://localhost:44392/media/songs/" + source;
+    document.getElementById("songName").innerHTML = name;
+    document.getElementById("songAuthor").innerHTML = author;
+    audioElement.play();
+    if ($('#showSongsPlayIcon').hasClass('play')) {
+        $('#showSongsPlayIcon').toggleClass('play pause');
+    }
+   
+    if (set) {
+        audioElement.ondurationchange = function () {
+            var duration = audioElement.duration;
+            if (duration != Infinity) {
+                $("#showSongsRange").range({
+                    min: 0,
+                    max: duration,
+                    start: 0,
+                    step: 0.1,
+                    onChange: function(val, meta) {
+                        if (meta.triggeredByUser) {
+                            audioElement.currentTime = val;
+                        }
+
+
+                    }
+                });
+                $('#songDuration').text(getTimeStringFromSeconds(duration))
+            }
+
+
+        };
+        audioElement.ontimeupdate = function () {
+            var currentTime = audioElement.currentTime;
+            $("#showSongsRange").range('set value', currentTime);
+            $('#elapsedTime').text(getTimeStringFromSeconds(currentTime));
+        };
+        set = false;
+
+    }
+    
+}
+
+function clickedPlayOnShowSongs() {
+    var icon = document.getElementById("showSongsPlayIcon");
+    if (icon.classList.contains('pause')) {
+        $('#showSongsAudio').trigger('pause');
+        icon.classList.remove('pause');
+        icon.classList.add('play');
+    } else {
+        $('#showSongsAudio').trigger('play');
+        icon.classList.remove('play');
+        icon.classList.add('pause');
+    }
+
+}
+
+function getTimeStringFromSeconds(time) {
+    var minutes = Math.floor(time / 60);
+    return minutes + ":" + Math.floor(time - 60 * minutes);
 }

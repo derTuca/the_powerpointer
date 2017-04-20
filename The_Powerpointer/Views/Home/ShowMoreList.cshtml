@@ -25,14 +25,14 @@
         {
             <div class="ui fluid card">
                 <div class="content">
-                    <audio src="@s.Source" id="audioTag"></audio>
-                    <i class="play icon" id="playOnShowMoreIcon"></i>
+                    <audio src="~/media/songs/@s.Source" class="audioTag"></audio>
+                    <i class="play icon playOnShowMoreIcon" style="cursor: pointer;" id="" onclick="songPlayShowMoreClicked(@s.Source)"></i>
                     <span class="songName">@s.Name</span>
                     <span class="bulletPoint">&bull;</span>
                     <span class="songAuthor">@s.Author</span>
                 </div>
 
-                <div class="ui range" style="display: inline;" id="my-range"></div>
+                <div class="ui range my-range" style="display: inline;" id=""></div>
             </div>
 
         }
