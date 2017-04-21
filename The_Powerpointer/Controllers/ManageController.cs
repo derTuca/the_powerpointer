@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using ImageMagick;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using The_Powerpointer.Data;
 using The_Powerpointer.Models;
 using The_Powerpointer.Models.ManageViewModels;
 using The_Powerpointer.Services;
@@ -19,7 +24,7 @@ namespace The_Powerpointer.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly string _externalCookieScheme;
-        private readonly IEmailSender _emailSender;
+        private readonly ApplicationDbContext _context;
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
 
@@ -27,14 +32,14 @@ namespace The_Powerpointer.Controllers
           UserManager<ApplicationUser> userManager,
           SignInManager<ApplicationUser> signInManager,
           IOptions<IdentityCookieOptions> identityCookieOptions,
-          IEmailSender emailSender,
+          ApplicationDbContext context,
           ISmsSender smsSender,
           ILoggerFactory loggerFactory)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _externalCookieScheme = identityCookieOptions.Value.ExternalCookieAuthenticationScheme;
-            _emailSender = emailSender;
+            _context = context;
             _smsSender = smsSender;
             _logger = loggerFactory.CreateLogger<ManageController>();
         }
@@ -61,8 +66,7 @@ namespace The_Powerpointer.Controllers
             var model = new IndexViewModel
             {
                 HasPassword = await _userManager.HasPasswordAsync(user),
-                PhoneNumber = await _userManager.GetPhoneNumberAsync(user),
-                TwoFactor = await _userManager.GetTwoFactorEnabledAsync(user),
+                Image = user.ProfilePicture,
                 Logins = await _userManager.GetLoginsAsync(user),
                 BrowserRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user)
             };
@@ -89,125 +93,37 @@ namespace The_Powerpointer.Controllers
             return RedirectToAction(nameof(ManageLogins), new { Message = message });
         }
 
-        //
-        // GET: /Manage/AddPhoneNumber
-        public IActionResult AddPhoneNumber()
-        {
-            return View();
-        }
-
-        //
-        // POST: /Manage/AddPhoneNumber
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddPhoneNumber(AddPhoneNumberViewModel model)
+        public async Task<IActionResult> ChangeProfilePicture(IndexViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-            // Generate the token and send it
-            var user = await GetCurrentUserAsync();
-            if (user == null)
-            {
-                return View("Error");
-            }
-            var code = await _userManager.GenerateChangePhoneNumberTokenAsync(user, model.PhoneNumber);
-            await _smsSender.SendSmsAsync(model.PhoneNumber, "Your security code is: " + code);
-            return RedirectToAction(nameof(VerifyPhoneNumber), new { PhoneNumber = model.PhoneNumber });
+            var pic = model.ProfilePicture;
+            var user =  await GetCurrentUserAsync();
+            var dbUser = await _context.Users.SingleOrDefaultAsync(u => u.Id == user.Id);
+            dbUser.ProfilePicture = await ResizeTo100100(pic);
+            _context.SaveChanges();
+            return RedirectToAction(nameof(Index));
         }
 
-        //
-        // POST: /Manage/EnableTwoFactorAuthentication
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EnableTwoFactorAuthentication()
+        private async Task<byte[]> ResizeTo100100(IFormFile formPicture)
         {
-            var user = await GetCurrentUserAsync();
-            if (user != null)
+            using (var stream = new MemoryStream())
             {
-                await _userManager.SetTwoFactorEnabledAsync(user, true);
-                await _signInManager.SignInAsync(user, isPersistent: false);
-                _logger.LogInformation(1, "User enabled two-factor authentication.");
-            }
-            return RedirectToAction(nameof(Index), "Manage");
-        }
-
-        //
-        // POST: /Manage/DisableTwoFactorAuthentication
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DisableTwoFactorAuthentication()
-        {
-            var user = await GetCurrentUserAsync();
-            if (user != null)
-            {
-                await _userManager.SetTwoFactorEnabledAsync(user, false);
-                await _signInManager.SignInAsync(user, isPersistent: false);
-                _logger.LogInformation(2, "User disabled two-factor authentication.");
-            }
-            return RedirectToAction(nameof(Index), "Manage");
-        }
-
-        //
-        // GET: /Manage/VerifyPhoneNumber
-        [HttpGet]
-        public async Task<IActionResult> VerifyPhoneNumber(string phoneNumber)
-        {
-            var user = await GetCurrentUserAsync();
-            if (user == null)
-            {
-                return View("Error");
-            }
-            var code = await _userManager.GenerateChangePhoneNumberTokenAsync(user, phoneNumber);
-            // Send an SMS to verify the phone number
-            return phoneNumber == null ? View("Error") : View(new VerifyPhoneNumberViewModel { PhoneNumber = phoneNumber });
-        }
-
-        //
-        // POST: /Manage/VerifyPhoneNumber
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> VerifyPhoneNumber(VerifyPhoneNumberViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-            var user = await GetCurrentUserAsync();
-            if (user != null)
-            {
-                var result = await _userManager.ChangePhoneNumberAsync(user, model.PhoneNumber, model.Code);
-                if (result.Succeeded)
+                await formPicture.CopyToAsync(stream);
+                using (var image = new MagickImage(stream))
                 {
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction(nameof(Index), new { Message = ManageMessageId.AddPhoneSuccess });
-                }
-            }
-            // If we got this far, something failed, redisplay the form
-            ModelState.AddModelError(string.Empty, "Failed to verify phone number");
-            return View(model);
-        }
+                    using (var os = new MemoryStream())
+                    {
+                        image.Resize(100, 100);
+                        image.Strip();
+                        image.Write(os);
+                        return os.ToArray();
+                    }
 
-        //
-        // POST: /Manage/RemovePhoneNumber
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RemovePhoneNumber()
-        {
-            var user = await GetCurrentUserAsync();
-            if (user != null)
-            {
-                var result = await _userManager.SetPhoneNumberAsync(user, null);
-                if (result.Succeeded)
-                {
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction(nameof(Index), new { Message = ManageMessageId.RemovePhoneSuccess });
                 }
-            }
-            return RedirectToAction(nameof(Index), new { Message = ManageMessageId.Error });
-        }
 
+            }
+        }
         //
         // GET: /Manage/ChangePassword
         [HttpGet]

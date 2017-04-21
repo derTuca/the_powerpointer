@@ -110,9 +110,8 @@ $(document).ready(function () {
         }
     });
 
-    $('#showSongsPlayIcon').click(function() {
-       
-    });
+
+    
 });
 
 
@@ -254,3 +253,6 @@ function getTimeStringFromSeconds(time) {
 }
 
 
+function profilePictureSelected() {
+    document.getElementById("profilePictureForm").submit();
+}
