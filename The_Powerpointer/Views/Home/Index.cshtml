@@ -7,8 +7,7 @@
 
 @{
 
-    var fakeUser = await UserManager.GetUserAsync(User);
-    var user = await DbContext.Users.SingleOrDefaultAsync(u => u.Id == fakeUser.Id);
+    var user = await UserManager.GetUserAsync(User);
     var str = user != null ? user.FirstName : "there";
     <h1 class="ui header lightFont" id="mainText">Hi @str!</h1>
 }

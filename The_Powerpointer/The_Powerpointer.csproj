@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Properties\PublishProfiles\The-Powerpointer - Web Deploy.pubxml" />
     <None Remove="Properties\PublishProfiles\ThePowerpointer20170411092902 - Web Deploy.pubxml" />
     <None Remove="Properties\PublishProfiles\ThePowerpointer20170411093820 - Web Deploy.pubxml" />
   </ItemGroup>
@@ -71,6 +72,7 @@
     <None Include="wwwroot\media\songs\Beethoven_1813_Symphony No. 7 - 2nd Movement.MP3" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="Views\Item\" />

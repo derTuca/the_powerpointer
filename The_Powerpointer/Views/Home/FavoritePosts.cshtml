@@ -7,7 +7,7 @@
     ViewData["Title"] = "FavoritePosts";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var fakeUser = await UserManager.GetUserAsync(User);
-    var user = await DbContext.Users.SingleOrDefaultAsync(u => u.Id == fakeUser.Id);
+    ApplicationUser user = fakeUser != null ? await DbContext.Users.SingleOrDefaultAsync(u => u.Id == fakeUser.Id) : null;
 }
 
 

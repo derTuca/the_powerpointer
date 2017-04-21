@@ -152,9 +152,6 @@ namespace The_Powerpointer.Controllers
                 case 0:
                     viewModel.News = await _context.News.Where(n => n.DatePublished.Date == DateTime.Today.Date).ToListAsync();
                     break;
-                case 1:
-                    viewModel.Songs = _context.Songs.ToList();
-                    break;
                 default:
                     viewModel.Pictures = _context.Pictures.ToList();
                     break;
@@ -164,7 +161,7 @@ namespace The_Powerpointer.Controllers
 
         private async Task<List<News>> GetShortenedNews()
         {
-            //TODO: Inca contine chestii repetitive
+           
             var chosenNumbers = new List<int>();
             var r = new Random();
             var l = await _context.News.Where(n => n.DatePublished.Date == DateTime.Today.Date).ToListAsync();
@@ -241,7 +238,7 @@ namespace The_Powerpointer.Controllers
 
         private async Task PopulateDatabase()
         {
-         //   ClearDb();
+            //ClearDb();
             await GetNews();   
             if (_context.Pictures.ToList().Count == 0)
             {

@@ -8,9 +8,9 @@
 
 @{
 
-    var fakeUser = await UserManager.GetUserAsync(User);
-    var user = await DbContext.Users.SingleOrDefaultAsync(u => u.Id == fakeUser.Id);
-  
+    var user = await UserManager.GetUserAsync(User);
+    
+
 }
 <div id="moreBody">
     @if (Model.Pictures != null)
@@ -32,25 +32,7 @@
         </div>
     }
 
-    else if (Model.Songs != null)
-    {
-        foreach (var s in Model.Songs)
-        {
-            <div class="ui fluid card">
-                <div class="content">
-                    <audio src="~/media/songs/@s.Source" class="audioTag"></audio>
-                    <i class="play icon playOnShowMoreIcon" style="cursor: pointer;" id="" onclick="songPlayShowMoreClicked(@s.Source)"></i>
-                    <span class="songName">@s.Name</span>
-                    <span class="bulletPoint">&bull;</span>
-                    <span class="songAuthor">@s.Author</span>
-                </div>
-
-                <div class="ui range my-range" style="display: inline;" id=""></div>
-            </div>
-
-        }
-    }
-
+    
     else
     {
         <div class="ui four doubling stackable cards">
