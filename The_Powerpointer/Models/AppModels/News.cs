@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using The_Powerpointer.Models.Joiners;
 
-namespace The_Powerpointer.Models
+namespace The_Powerpointer.Models.AppModels
 {
     public class News
     {

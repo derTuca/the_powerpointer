@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
-namespace The_Powerpointer.Models
+namespace The_Powerpointer.Models.HelperModels
 {
     public class NYTPicture
     {

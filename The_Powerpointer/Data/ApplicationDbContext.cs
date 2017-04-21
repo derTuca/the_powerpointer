@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using The_Powerpointer.Models;
+using The_Powerpointer.Models.AppModels;
 using The_Powerpointer.Models.Joiners;
 
 namespace The_Powerpointer.Data
@@ -45,12 +46,10 @@ namespace The_Powerpointer.Data
                 .HasOne(us => us.Song)
                 .WithMany(s => s.Users)
                 .HasForeignKey(us => us.SongId);
-            // Customize the ASP.NET Identity model and override the defaults if needed.
-            // For example, you can rename the ASP.NET Identity table names and more.
-            // Add your customizations after calling base.OnModelCreating(builder);
+       
         }
 
-        public DbSet<Author> Authors { get; set; }
+        
         public DbSet<News> News { get; set; }
         public DbSet<Song> Songs { get; set; }
         public DbSet<Picture> Pictures { get; set; }

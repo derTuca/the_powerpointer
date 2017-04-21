@@ -16,6 +16,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using The_Powerpointer.Data;
 using The_Powerpointer.Models;
+using The_Powerpointer.Models.AppModels;
+using The_Powerpointer.Models.HelperModels;
 
 namespace The_Powerpointer.Controllers
 {

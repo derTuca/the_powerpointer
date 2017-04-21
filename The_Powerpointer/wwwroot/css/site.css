@@ -1,8 +1,4 @@
-﻿@font-face {
-    font-family: 'AlegreyaSans';
-    src: url('~/fonts/AlegreyaSans-Thin.ttf') format('truetype');
-}
-
+﻿
 @media (max-width: 300px) {
     #mainText {
         font-size: 5em;
@@ -53,6 +49,7 @@
     -ms-border-radius: 50%;
     border-radius: 50%;
 }
+
 .showMoreButton {
     float: right;
     margin-top: 5px;

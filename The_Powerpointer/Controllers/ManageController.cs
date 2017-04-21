@@ -14,7 +14,6 @@ using Microsoft.Extensions.Options;
 using The_Powerpointer.Data;
 using The_Powerpointer.Models;
 using The_Powerpointer.Models.ManageViewModels;
-using The_Powerpointer.Services;
 
 namespace The_Powerpointer.Controllers
 {
@@ -25,7 +24,6 @@ namespace The_Powerpointer.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly string _externalCookieScheme;
         private readonly ApplicationDbContext _context;
-        private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
 
         public ManageController(
@@ -33,14 +31,12 @@ namespace The_Powerpointer.Controllers
           SignInManager<ApplicationUser> signInManager,
           IOptions<IdentityCookieOptions> identityCookieOptions,
           ApplicationDbContext context,
-          ISmsSender smsSender,
           ILoggerFactory loggerFactory)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _externalCookieScheme = identityCookieOptions.Value.ExternalCookieAuthenticationScheme;
             _context = context;
-            _smsSender = smsSender;
             _logger = loggerFactory.CreateLogger<ManageController>();
         }
 

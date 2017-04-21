@@ -3,7 +3,7 @@ $(document).ready(function () {
     
     $("#audioTag").bind('durationchange',
         function(e) {
-            if (this.duration != Infinity) {
+            if (this.duration !== Infinity) {
                 $('#my-range').range({
                     min: 0,
                     max: $('#audioTag').prop("duration"),
@@ -20,9 +20,9 @@ $(document).ready(function () {
             }
         });
     $('#audioTag').bind('timeupdate',
-        (function() {
+        function() {
             $('#my-range').range('set value', $('#audioTag').prop("currentTime"));
-        }));
+        });
     $('#user-details').popup({
         inline: true,
         hoverable: true
@@ -189,13 +189,13 @@ function songClicked(id, div) {
         url: "/Shared/GetSong/" + id,
         datatype: "html",
         success: function(data) {
-            if (currentDiv != null) {
-                var c = (prevWasGray) ? 'lightgray' : 'white';
+            if (currentDiv !== null) {
+                var c = prevWasGray ? 'lightgray' : 'white';
                 $(currentDiv).css('background-color', c);
             }
 
             //de ce nu poate sa accepte lightgray nu inteleg
-            prevWasGray = $(div).css('background-color') == 'rgb(211, 211, 211)';
+            prevWasGray = $(div).css('background-color') === 'rgb(211, 211, 211)';
             $(div).css('background-color', 'lightblue');
             currentDiv = div;
             $('#showSongsPlayer').html(data);

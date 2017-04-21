@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using The_Powerpointer.Data;
 
-namespace The_Powerpointer.Models
+namespace The_Powerpointer.Models.HelperModels
 {   
     [JsonConverter(typeof(JsonPathConverter))]
     // ReSharper disable once InconsistentNaming
@@ -26,10 +24,10 @@ namespace The_Powerpointer.Models
         {
             get
             {
-                if (Media.Any())
+                if (Enumerable.Any(Media))
                 {
-                    var pic = Media.FirstOrDefault(p => p.Subtype == "wide");
-                    if (pic == null) return Media.First().Url;
+                    var pic = Enumerable.FirstOrDefault(Media, p => p.Subtype == "wide");
+                    if (pic == null) return Enumerable.First(Media).Url;
                     return pic.Url;
                     
                 }
