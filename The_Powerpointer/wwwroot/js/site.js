@@ -137,50 +137,101 @@ function songPlayShowMoreClicked(link) {
     showMoreAudio.play();
 }
 
-var audioElement;
 var set = true;
-function songClicked(name, author, source) {
-    console.log("DA");
-    var audioElement = document.getElementById("showSongsAudio");
-    audioElement.src = "https://localhost:44392/media/songs/" + source;
-    document.getElementById("songName").innerHTML = name;
-    document.getElementById("songAuthor").innerHTML = author;
-    audioElement.play();
-    if ($('#showSongsPlayIcon').hasClass('play')) {
-        $('#showSongsPlayIcon').toggleClass('play pause');
-    }
+//function songClicked(name, author, source) {
+//    console.log("DA");
+//    var audioElement = document.getElementById("showSongsAudio");
+//    audioElement.src = "https://localhost:44392/media/songs/" + source;
+//    document.getElementById("songName").innerHTML = name;
+//    document.getElementById("songAuthor").innerHTML = author;
+//    audioElement.play();
+//    if ($('#showSongsPlayIcon').hasClass('play')) {
+//        $('#showSongsPlayIcon').toggleClass('play pause');
+//    }
    
-    if (set) {
-        audioElement.ondurationchange = function () {
-            var duration = audioElement.duration;
-            if (duration != Infinity) {
-                $("#showSongsRange").range({
-                    min: 0,
-                    max: duration,
-                    start: 0,
-                    step: 0.1,
-                    onChange: function(val, meta) {
-                        if (meta.triggeredByUser) {
-                            audioElement.currentTime = val;
-                        }
+//    if (set) {
+//        audioElement.ondurationchange = function () {
+//            var duration = audioElement.duration;
+//            if (duration != Infinity) {
+//                $("#showSongsRange").range({
+//                    min: 0,
+//                    max: duration,
+//                    start: 0,
+//                    step: 0.1,
+//                    onChange: function(val, meta) {
+//                        if (meta.triggeredByUser) {
+//                            audioElement.currentTime = val;
+//                        }
 
 
-                    }
-                });
-                $('#songDuration').text(getTimeStringFromSeconds(duration))
+//                    }
+//                });
+//                $('#songDuration').text(getTimeStringFromSeconds(duration))
+//            }
+
+
+//        };
+//        audioElement.ontimeupdate = function () {
+//            var currentTime = audioElement.currentTime;
+//            $("#showSongsRange").range('set value', currentTime);
+//            $('#elapsedTime').text(getTimeStringFromSeconds(currentTime));
+//        };
+//        set = false;
+
+//    }
+    
+//}
+var currentDiv;
+var prevWasGray = false;
+function songClicked(id, div) {
+
+    $.ajax({
+        type: "GET",
+        url: "/Shared/GetSong/" + id,
+        datatype: "html",
+        success: function(data) {
+            if (currentDiv != null) {
+                var c = (prevWasGray) ? 'lightgray' : 'white';
+                $(currentDiv).css('background-color', c);
             }
 
+            //de ce nu poate sa accepte lightgray nu inteleg
+            prevWasGray = $(div).css('background-color') == 'rgb(211, 211, 211)';
+            $(div).css('background-color', 'lightblue');
+            currentDiv = div;
+            $('#showSongsPlayer').html(data);
+        }
+    });
+    //        var audioElement = document.getElementById("showSongsAudio");
+    //        audioElement.ondurationchange = function () {
+    //        var duration = audioElement.duration;
+    //        if (duration != Infinity) {
+    //            $("#showSongsRange").range({
+    //                min: 0,
+    //                max: duration,
+    //                start: 0,
+    //                step: 0.1,
+    //                onChange: function(val, meta) {
+    //                    if (meta.triggeredByUser) {
+    //                        audioElement.currentTime = val;
+    //                    }
 
-        };
-        audioElement.ontimeupdate = function () {
-            var currentTime = audioElement.currentTime;
-            $("#showSongsRange").range('set value', currentTime);
-            $('#elapsedTime').text(getTimeStringFromSeconds(currentTime));
-        };
-        set = false;
 
-    }
-    
+    //                }
+    //            });
+    //            $('#songDuration').text(getTimeStringFromSeconds(duration));
+    //        }
+
+
+    //    };
+    //    audioElement.ontimeupdate = function () {
+    //        var currentTime = audioElement.currentTime;
+    //        $("#showSongsRange").range('set value', currentTime);
+    //        $('#elapsedTime').text(getTimeStringFromSeconds(currentTime));
+    //        };
+    //        audioElement.play();
+    //    }
+    //});
 }
 
 function clickedPlayOnShowSongs() {
@@ -201,3 +252,5 @@ function getTimeStringFromSeconds(time) {
     var minutes = Math.floor(time / 60);
     return minutes + ":" + Math.floor(time - 60 * minutes);
 }
+
+

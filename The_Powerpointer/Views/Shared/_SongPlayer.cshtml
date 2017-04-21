@@ -1,0 +1,49 @@
+@model Song
+<div style="position: fixed; bottom: 1%; left: 0; right: 0;" id="showSongsPlayer">
+    
+    <audio id="showSongsAudio" src="~/media/songs/@Model.Source"></audio>
+    <div style="background-color: lightgray;">
+        <i class="pause icon" style="font-size: 1.5em; cursor: pointer; padding: 15px;" id="showSongsPlayIcon" onclick="clickedPlayOnShowSongs()"></i>
+        <div style="display: inline;">
+            <span style="font-weight: bold;" id="songName">@Model.Name</span> &bull; <span id="songAuthor">@Model.Author</span> &bull; <span id="elapsedTime">00:00</span>/<span id="songDuration">00:00</span>
+            <div class="ui range" id="showSongsRange"></div>
+        </div>
+
+
+    </div>
+</div>
+
+@*
+    Pun aici scriptul pentru player ca sa nu mai trebuiasca sa scriu treaba de mai jos de fiecare data cand il declar si sa fie un fel de play on appear    
+*@
+<script type="text/javascript">
+    var audioElement = document.getElementById("showSongsAudio");
+    audioElement.ondurationchange = function () {
+        var duration = audioElement.duration;
+        if (duration != Infinity) {
+            $("#showSongsRange").range({
+                min: 0,
+                max: duration,
+                start: 0,
+                step: 0.1,
+                onChange: function(val, meta) {
+                    if (meta.triggeredByUser) {
+                        audioElement.currentTime = val;
+                    }
+
+
+                }
+            });
+            $('#songDuration').text(getTimeStringFromSeconds(duration));
+        }
+
+
+    };
+    audioElement.ontimeupdate = function () {
+        var currentTime = audioElement.currentTime;
+        $("#showSongsRange").range('set value', currentTime);
+        $('#elapsedTime').text(getTimeStringFromSeconds(currentTime));
+    };
+    audioElement.play();
+    
+</script>

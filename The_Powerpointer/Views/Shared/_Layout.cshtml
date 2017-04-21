@@ -23,9 +23,9 @@
 </head>
 <body>
     <div class="ui container">
-        <div class="ui attached stackable menu">
+        <div class="ui attached stackable borderless menu">
             <div class="ui container">
-                <a class="item">The PowerPointer</a>
+                <a class="item" asp-controller="Home" asp-action="Index">The PowerPointer</a>
                 <a class="item" asp-controller="Home" asp-action="Index"><i class="clock icon"></i>Briefing</a>
                 @if (SignInManager.IsSignedIn(User))
                 {

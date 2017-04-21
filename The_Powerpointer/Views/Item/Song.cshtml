@@ -1,0 +1,54 @@
+@model The_Powerpointer.Models.ItemViewModels.SongViewModel
+@{
+    ViewData["Title"] = "Song";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<div class="ui stackable grid">
+    <div class="ui center aligned row" style="margin-top: 20px;">
+        <div class="ui six wide column">
+            <table class="ui very basic collapsing celled table">
+                <tr>
+                    <td><span class="ui header">Title</span></td>
+                    <td><span class="ui header">@Model.Song.Name</span></td>
+                </tr>
+                <tr>
+                    <td>Author</td>
+                    <td>@Model.Song.Author</td>
+                </tr>
+                <tr>
+                    <td>Year created</td>
+                    <td>@Model.Song.DateCreated.Year</td>
+                </tr>
+            </table>
+        </div>
+        <div class="ten wide column">
+            <h3 class="ui header" style="margin-bottom: 15px;">You might also like:</h3>
+            <div class="ui list">
+                @for (int i = 0; i < Model.SuggestedSongs.Count; i++)
+                {
+                    var s = Model.SuggestedSongs[i];
+                    var clsass = "padding: 10px 0; cursor: pointer;";
+                    if (i % 2 != 0)
+                    {
+                        clsass += " background-color: lightgray;";
+                    }
+
+                    <a asp-controller="Item" asp-action="Song" asp-route-id="@s.Id">
+                        <div class="item" style="@clsass">
+                            <span style="font-weight: bold;">@s.Name</span> &bull; @s.Author
+                        </div>
+                    </a>
+
+
+                }
+
+            </div>
+        </div>
+    </div>
+    <div class="ui row">
+        @Html.Partial("_SongPlayer", Model.Song)
+    </div>
+</div>

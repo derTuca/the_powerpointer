@@ -13,12 +13,14 @@
     @for (int i = 0; i < Model.Count; i++)
     {
         var s = Model[i];
-        var clsass = "padding: 10px 0;";
+        var clsass = "padding: 10px 0; cursor: pointer;";
         if (i % 2 != 0)
         {
             clsass += " background-color: lightgray;";
         }
-        <div class="item" style="@clsass" onclick="songClicked('@s.Name', '@s.Author', '@s.Source')">
+        
+        @*<div class="item" style="@clsass" onclick="songClicked('@s.Name', '@s.Author', '@s.Source')">*@
+        <div class="item" style="@clsass" onclick="songClicked('@s.Id', this)">
             <span style="font-weight: bold;">@s.Name</span> &bull; @s.Author
         </div>
 
@@ -26,7 +28,10 @@
             
 </div>
 
-<div style="position: absolute; bottom: 1%; left: 2%; right: 2%;" id="showSongsPlayer">
+
+<div id="showSongsPlayer"></div>
+
+@*<div style="position: absolute; bottom: 1%; left: 2%; right: 2%;" id="showSongsPlayer">
     <audio id="showSongsAudio"></audio>
     <div style="background-color: lightgray;">
         <i class="play icon" style="font-size: 1.5em; cursor: pointer;" id="showSongsPlayIcon" onclick="clickedPlayOnShowSongs()"></i>
@@ -37,7 +42,7 @@
 
 
     </div>
-</div>
+</div>*@
 
 
 

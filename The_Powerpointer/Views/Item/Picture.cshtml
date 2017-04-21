@@ -1,0 +1,53 @@
+@model The_Powerpointer.Models.ItemViewModels.PictureViewModel
+@{
+    ViewData["Title"] = "Picture";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="ui stackable grid" style="margin-top: 50px;">
+    <div class="ui center aligned row">
+        <div class="ten wide column">
+            <div class="ui segment">
+                <img src="~/media/pictures/@Model.Picture.Source" />
+            </div>
+        </div>
+        <div class="six wide column">
+            <div class="ui segment">
+                <table class="ui very basic collapsing celled table">
+                    <tr>
+                        <td>Author</td>
+                        <td>@Model.Picture.Author</td>
+                    </tr>
+                    <tr>
+                        <td>Year</td>
+                        <td>@Model.Picture.DateCreated.Year</td>
+                    </tr>
+                    <tr>
+                        <td>Technique</td>
+                        <td>Oil on copper</td>
+                    </tr>
+                    <tr>
+                        <td>Dimensions</td>
+                        <td>25.5 X 45.8</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="ui row">
+        <h3 class="ui header" style="margin-bottom: 15px;">You might also like</h3>
+    </div>
+    <div class="ui row">
+        @foreach (var p in Model.SuggestedPictures)
+        {
+            <div class="ui segment" style="display: inline; margin: 15px;">
+                <a asp-controller="Item" asp-Action="Picture" asp-route-id="@p.Id">
+                    <img src="~/media/pictures/@p.Source" style="width: 150px; height: 150px;" onclick="pictureClicked(@p.Id)" />
+                </a>
+            </div>
+        }
+    </div>
+
+
+</div>
+

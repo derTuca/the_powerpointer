@@ -70,9 +70,9 @@
     <None Include="wwwroot\media\songs\Beethoven_1813_Symphony No. 7 - 2nd Movement.MP3" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Media\Songs\" />
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="Properties\PublishProfiles\" />
+    <Folder Include="Views\Item\" />
     <Folder Include="Views\ShowMore\" />
   </ItemGroup>
   <ItemGroup>
