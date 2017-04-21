@@ -1,46 +1,28 @@
+@using Microsoft.EntityFrameworkCore
+@using The_Powerpointer.Data
 @model FavoriteViewModel
 @inject UserManager<ApplicationUser> UserManager
+@inject ApplicationDbContext DbContext
 @{
     ViewData["Title"] = "FavoritePosts";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var user = await UserManager.GetUserAsync(User);
+    var fakeUser = await UserManager.GetUserAsync(User);
+    var user = await DbContext.Users.SingleOrDefaultAsync(u => u.Id == fakeUser.Id);
 }
 
-<div class="headerButtons">
+
     <h3 class="ui header">News</h3>
-</div>
+
 <div class="ui four doubling stackable cards">
     @foreach (var n in Model.News)
     {
+        @Html.Partial("_NewsCard", new NewsCardViewModel
+        {
+            News = n.News,
+            Favorited = user?.News.SingleOrDefault(un => un.NewsId == n.NewsId) != null
+        })
         
-        <div class="ui fluid card">
-            <div class="image">
 
-                <img src="@n.News.ImageUrl" />
-            </div>
-            <div class="content">
-                <a href="@n.News.Url">
-                    <div class="header">@n.News.Headline</div>
-                    <div class="meta">@n.News.DatePublished.ToString("d")</div>
-                    <div class="description">
-                        <p>@n.News.Description</p>
-                    </div>
-                </a>
-
-            </div>
-            <div class="content">
-                <span class="right floated">
-                    @{
-                        var cls = "star icon";
-                        if (n.ApplicationUserId != user.Id)
-                        {
-                            cls = $"empty {cls}";
-                        }
-                    }
-                    <i class="@cls" id="starIcon" onclick="starClicked(this, @n.NewsId)"></i>
-                </span>
-            </div>
-        </div>
         
     }
 

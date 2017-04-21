@@ -1,0 +1,34 @@
+@model NewsCardViewModel
+<div class="ui fluid card">
+    <div class="image">
+       
+        <img src="@Model.News.ImageUrl" />
+
+
+    </div>
+    <div class="content">
+        <a href="@Model.News.Url">
+            <div class="header">@Model.News.Headline</div>
+            <div class="meta">@Model.News.DatePublished.ToString("d")</div>
+            <div class="description">
+                <p>@Model.News.Description</p>
+            </div>
+        </a>
+
+    </div>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="content">
+            <span class="right floated">
+                @{
+
+                   
+                    var cl = Model.Favorited ? "star icon" : "empty star icon";
+                    <i class="@cl" id="starIcon" onclick="starClicked(this, @Model.News.Id)"></i>
+                }
+                
+            </span>
+        </div>
+    }
+
+</div>

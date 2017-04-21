@@ -44,17 +44,23 @@ namespace The_Powerpointer.Controllers
         {
 
             MainPageViewModel viewModel = new MainPageViewModel();
-            if (_lastUpdated != DateTime.Today)
+            if (_lastUpdated.Date != DateTime.Today)
             {
-                await PopulateDatabase();
+                
                 var r = new Random();
-                _lastUpdated = DateTime.Today;
+                foreach (var n in _context.News)
+                {
+                    if (n.DatePublished > _lastUpdated) _lastUpdated = n.DatePublished;
+                }
+                await PopulateDatabase();
+                //_lastUpdated = DateTime.Today;
                 var s = _context.Songs.ToArray();
                 _selectedPictures = SelectPictures();
                 _selectedSong = s[r.Next(s.Length - 1)];
                 
             }
             _selectedNews = await GetShortenedNews();
+          
             viewModel.Song = _selectedSong;
             viewModel.News = _selectedNews;
             viewModel.Pictures = _selectedPictures;
@@ -144,7 +150,7 @@ namespace The_Powerpointer.Controllers
             switch (type)
             {
                 case 0:
-                    viewModel.News = await _context.News.Where(n => n.DatePublished == DateTime.Today).ToListAsync();
+                    viewModel.News = await _context.News.Where(n => n.DatePublished.Date == DateTime.Today.Date).ToListAsync();
                     break;
                 case 1:
                     viewModel.Songs = _context.Songs.ToList();
@@ -190,22 +196,52 @@ namespace The_Powerpointer.Controllers
             var response = await Program.Client.GetAsync(@"https://newsapi.org/v1/articles?source=cnn&sortBy=top&apiKey=8596c1fa77264dae8f8b6dd607356671");
             if (response.IsSuccessStatusCode)
             {
-                
+                DateTime latestDate = _lastUpdated;
                 var json = await response.Content.ReadAsStringAsync();
                 var obj = JsonConvert.DeserializeObject<JObject>(json);
                 var l = obj.GetValue("articles").ToObject<List<News>>();
                 foreach (var n in l)
                 {
-                    _context.News.Add(n);
+                   
+                        if (n.DatePublished > _lastUpdated)
+                        {
+                            if(n.DatePublished > latestDate ) latestDate = n.DatePublished;
+                            _context.News.Add(n);
+                    }
+                   
                 }
+                _lastUpdated = latestDate;
                 await _context.SaveChangesAsync();
                
             }
            
         }
 
+        //A SE FOLOSI DOAR LA MARE NEVOIE
+        private void ClearDb()
+        {
+            foreach (var i in _context.News)
+            {
+                _context.News.Remove(i);
+            }
+            foreach (var j in _context.Pictures)
+            {
+                _context.Pictures.Remove(j);
+            }
+            foreach (var k in _context.Songs)
+            {
+                _context.Songs.Remove(k);
+            }
+            foreach (var i in _context.UserNews)
+            {
+                _context.UserNews.Remove(i);
+            }
+            _context.SaveChanges();
+        }
+
         private async Task PopulateDatabase()
         {
+         //   ClearDb();
             await GetNews();   
             if (_context.Pictures.ToList().Count == 0)
             {
@@ -234,7 +270,7 @@ namespace The_Powerpointer.Controllers
                     string[] parts = a[a.Length - 1].Split('_');
                     Song s = new Song
                     {
-                        Name = parts[2].Split('.')[0],
+                        Name = parts[2].Substring(0, parts[2].Length - 4),
                         Author = parts[0],
                         Source = Path.GetFileName(file),
                         DateCreated = new DateTime(int.Parse(parts[1]), 1, 1)

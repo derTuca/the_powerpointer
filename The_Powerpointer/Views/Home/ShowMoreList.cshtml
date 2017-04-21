@@ -1,4 +1,17 @@
-﻿@model ShowMoreViewModel
+﻿@using Microsoft.EntityFrameworkCore
+@using The_Powerpointer.Data
+
+@inject UserManager<ApplicationUser> UserManager
+@inject ApplicationDbContext DbContext
+
+@model ShowMoreViewModel
+
+@{
+
+    var fakeUser = await UserManager.GetUserAsync(User);
+    var user = await DbContext.Users.SingleOrDefaultAsync(u => u.Id == fakeUser.Id);
+  
+}
 <div id="moreBody">
     @if (Model.Pictures != null)
     {
@@ -43,18 +56,20 @@
         <div class="ui four doubling stackable cards">
             @foreach (var n in Model.News)
             {
-                <a class="ui fluid card" href="@n.Url">
-                    <div class="image">
-                        <img src="@n.ImageUrl"/>
-                    </div>
-                    <div class="content">
-                        <div class="header">@n.Headline</div>
-                        <div class="meta">@n.DatePublished.ToString("d")</div>
-                        <div class="description">
-                            <p>@n.Description</p>
-                        </div>
-                    </div>
-                </a>
+                var fav = false;
+                if (user != null)
+                {
+                    var news = DbContext.UserNews.SingleOrDefault(un => un.NewsId == n.Id && un.ApplicationUserId == user.Id);
+                    if (news != null)
+                    {
+                        fav = true;
+                    }
+                }
+                @Html.Partial("_NewsCard", new NewsCardViewModel
+                {
+                    News = n,
+                    Favorited = fav
+                })
             }
         </div>
     }

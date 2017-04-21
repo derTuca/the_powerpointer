@@ -30,16 +30,17 @@ namespace The_Powerpointer.Controllers
         {
             var boolAdded = true;
             var detachedUser = await _manager.GetUserAsync(HttpContext.User);
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == detachedUser.Id);
+            var user = _context.Users.SingleOrDefault(u => u.Id == detachedUser.Id);
+            var userNews = _context.UserNews.Where(un => un.ApplicationUserId == detachedUser.Id).ToList();
             try
             {
-                var f = user.News.SingleOrDefault(n => n.NewsId == id);
+                var f = userNews.SingleOrDefault(n => n.NewsId == id);
                 if (f == null)
                 {
                     var news = await _context.News.SingleOrDefaultAsync(n => n.Id == id);
                     var un = new UserNews
                     {
-                        ApplicationUser = user,
+                        ApplicationUser = detachedUser,
                         News = news
                     };
                     user.News.Add(un);
@@ -55,7 +56,7 @@ namespace The_Powerpointer.Controllers
             {
                 System.Diagnostics.Debug.WriteLine(e.Message);
             }
-            await _context.SaveChangesAsync().ConfigureAwait(false);
+            await _context.SaveChangesAsync();
            
            
             return new ObjectResult(boolAdded);

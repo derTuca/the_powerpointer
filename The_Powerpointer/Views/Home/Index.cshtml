@@ -1,11 +1,14 @@
-﻿@using The_Powerpointer.Models.Joiners
+﻿@using Microsoft.EntityFrameworkCore
+@using The_Powerpointer.Data
 @model MainPageViewModel
 @inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
+@inject ApplicationDbContext DbContext
 
 @{
 
-    var user = await UserManager.GetUserAsync(User);
+    var fakeUser = await UserManager.GetUserAsync(User);
+    var user = await DbContext.Users.SingleOrDefaultAsync(u => u.Id == fakeUser.Id);
     var str = user != null ? user.FirstName : "there";
     <h1 class="ui header lightFont" id="mainText">Hi @str!</h1>
 }
@@ -21,39 +24,21 @@
     <div class="ui four doubling stackable cards">
         @foreach (var n in Model.News)
         {
-            <div class="ui fluid card">
-                <div class="image">
 
-                    <img src="@n.ImageUrl" />
-
-
-                </div>
-                <div class="content">
-                    <a href="@n.Url">
-                        <div class="header">@n.Headline</div>
-                        <div class="meta">@n.DatePublished.ToString("d")</div>
-                        <div class="description">
-                            <p>@n.Description</p>
-                        </div>
-                    </a>
-
-                </div>
-                @if (user != null)
+            var fav = false;
+            if (user != null)
+            {
+                var news = DbContext.UserNews.SingleOrDefault(un => un.NewsId == n.Id && un.ApplicationUserId == user.Id);
+                if (news != null)
                 {
-                    <div class="content">
-                        <span class="right floated">
-                            @{
-
-                                var f = user.News.SingleOrDefault(un => un.ApplicationUserId == user.Id && un.NewsId == n.Id);
-                                var cl = f == null ? "empty star icon" : "star icon";
-                                <i class="@cl" id="starIcon" onclick="starClicked(this, @n.Id)"></i>
-                            }
-i
-                        </span>
-                    </div>
-                                }
-
-            </div>
+                    fav = true;
+                }
+            }
+                @Html.Partial("_NewsCard", new NewsCardViewModel
+                {
+                    News = n,
+                    Favorited = fav
+            })
                                 }
 
     </div>

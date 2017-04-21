@@ -12,5 +12,6 @@ namespace The_Powerpointer.Models
         public ICollection<Picture> Pictures { get; set; }
         public Song Song { get; set; }
         public ApplicationUser User { get; set; }
+ 
     }
 }
