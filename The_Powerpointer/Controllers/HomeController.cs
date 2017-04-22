@@ -170,13 +170,19 @@ namespace The_Powerpointer.Controllers
             for (int i = 0; i < k; i++)
             {
                 var j = r.Next(l.Count - 1);
-                if (chosenNumbers.Contains(j)) k++;
+
+                if (lr.Contains(l[j]))
+                {
+                    l.Remove(l[j]);
+                    k++;
+                }
                 else
                 {
                     lr.Add(l[j]);
                     chosenNumbers.Add(j);
                 }
-                
+                if (!l.Any()) break;
+
             }
             return lr;
             

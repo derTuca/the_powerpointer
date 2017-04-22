@@ -9,24 +9,7 @@
 
   
     
-<div class="ui list">
-    @for (int i = 0; i < Model.Count; i++)
-    {
-        var s = Model[i];
-        var clsass = "padding: 10px 0; cursor: pointer;";
-        if (i % 2 != 0)
-        {
-            clsass += " background-color: lightgray;";
-        }
-        
-        <div class="item" style="@clsass" onclick="songClicked('@s.Id', this)">
-            <span style="font-weight: bold;">@s.Name</span> &bull; @s.Author
-        </div>
-
-    }
-            
-</div>
-
+@Html.Partial("_SongList", Model)
 
 <div id="showSongsPlayer"></div>
 
