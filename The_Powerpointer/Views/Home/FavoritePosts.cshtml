@@ -1,3 +1,4 @@
+@using Microsoft.CodeAnalysis.CSharp.Syntax
 @using Microsoft.EntityFrameworkCore
 @using The_Powerpointer.Data
 @model FavoriteViewModel
@@ -8,23 +9,45 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     var fakeUser = await UserManager.GetUserAsync(User);
     ApplicationUser user = fakeUser != null ? await DbContext.Users.SingleOrDefaultAsync(u => u.Id == fakeUser.Id) : null;
+    var any = false;
 }
 
 
+@if (Model.News.Any())
+{
+    any = true;
     <h3 class="ui header">News</h3>
 
-<div class="ui four doubling stackable cards">
-    @foreach (var n in Model.News)
-    {
-        @Html.Partial("_NewsCard", new NewsCardViewModel
+    <div class="ui four doubling stackable cards">
+        @foreach (var n in Model.News)
         {
-            News = n.News,
-            Favorited = user?.News.SingleOrDefault(un => un.NewsId == n.NewsId) != null
-        })
+            @Html.Partial("_NewsCard", new NewsCardViewModel
+            {
+                News = n.News,
+                Favorited = user?.News.SingleOrDefault(un => un.NewsId == n.NewsId) != null
+            })
         
 
         
+        }
+
+    </div>
+
+
+}
+
+@if (Model.Songs.Any())
+{
+    var songList = new List<Song>();
+    foreach (var n in Model.Songs)
+    {
+
+        songList.Add(n.Song);
+
     }
+    any = true;
+    <h3 class="ui header">Songs</h3>
+    @Html.Partial("_SongList", songList);
 
-</div>
+}
 

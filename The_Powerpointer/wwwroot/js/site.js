@@ -93,9 +93,9 @@ $(document).ready(function () {
 });
 
 
-function starClicked(icon, id) {
+function starClicked(icon, id, type) {
     console.log(id);
-    $.get("/api/favorite",
+    $.get("/api/favorite" + type,
         { id: id },
         function(result) {
             if (result) {
@@ -104,6 +104,11 @@ function starClicked(icon, id) {
         }).fail(function(e) {
         console.log(e);
     });
+}
+
+function songPreClick(event, id) {
+    starClicked(this, id, 'song');
+    event.StopProgagation();
 }
 
 var showMoreAudio;

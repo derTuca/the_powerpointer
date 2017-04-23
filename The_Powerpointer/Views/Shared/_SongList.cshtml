@@ -1,5 +1,11 @@
+@using System.Runtime.InteropServices.ComTypes
+@using The_Powerpointer.Data
 @model List<Song>
-
+@inject ApplicationDbContext DbContext
+@inject UserManager<ApplicationUser> UserManager
+@{
+    var user = await UserManager.GetUserAsync(User);
+}
 <div class="ui list">
     @for (int i = 0; i < Model.Count; i++)
     {
@@ -9,10 +15,32 @@
         {
             clsass += " background-color: lightgray;";
         }
+        
 
-        <div class="item" style="@clsass" onclick="songClicked('@s.Id', this)">
-            <span style="font-weight: bold;">@s.Name</span> &bull; @s.Author
-        </div>
+        
+        <a href="@Url.Action("Song", "Item", new { id = s.Id })">
+            <div class="item" style="@clsass" >
+            
+                <span style="font-weight: bold;">@s.Name</span> &bull; @s.Author
+            
+                @if (User.Identity.IsAuthenticated)
+                {
+                    var clas = "right floated star icon";
+                    var uss = DbContext.UserSongs.SingleOrDefault(us => us.ApplicationUserId == user.Id && us.SongId == s.Id);
+                    if (uss == null)
+                    {
+                        clas = $"empty {clas}";
+
+                    }
+                    <i class="@clas" onclick="starClicked(this, @s.Id, 'song'); event.StopProgagation();"></i>
+                }
+           
+           
+            
+           
+            </div>
+        </a>
+        
     }
 
 </div>

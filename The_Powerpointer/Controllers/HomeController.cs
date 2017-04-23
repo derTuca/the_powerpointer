@@ -112,13 +112,19 @@ namespace The_Powerpointer.Controllers
         {
             var u = await _manager.GetUserAsync(HttpContext.User);
             var user = _context.UserNews.Where(un => un.ApplicationUserId == u.Id).ToList();
+            var userSongs = _context.UserSongs.Where(us => us.ApplicationUserId == u.Id).ToList();
             foreach (var userNewse in user)
             {
                 userNewse.News = _context.News.SingleOrDefault(p => p.Id == userNewse.NewsId);
             }
+            foreach (var userSong in userSongs)
+            {
+                userSong.Song = _context.Songs.SingleOrDefault(s => s.Id == userSong.SongId);
+            }
             var model = new FavoriteViewModel()
             {
-                News = user
+                News = user,
+                Songs = userSongs
             };
             return View(model);
         }

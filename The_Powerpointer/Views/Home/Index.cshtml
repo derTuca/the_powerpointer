@@ -56,6 +56,20 @@
         <span class="songName">@Model.Song.Name</span>
         <span class="bulletPoint">&bull;</span>
         <span class="songAuthor">@Model.Song.Author</span>
+        @{
+            var cls = "right floated star icon";
+            if (User.Identity.IsAuthenticated)
+             {
+                 var clas = "right floated star icon";
+                 var uss = DbContext.UserSongs.SingleOrDefault(us => us.ApplicationUserId == user.Id && us.SongId == Model.Song.Id);
+                 if (uss == null)
+                 {
+                     clas = $"empty {clas}";
+
+                 }
+                 <i class="@clas" onclick="starClicked(this, @Model.Song.Id, 'song'); event.StopProgagation();"></i>
+             }
+        }
     </div>
 
     <div class="ui range" style="display: inline;" id="my-range"></div>
